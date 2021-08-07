@@ -12,6 +12,7 @@
   "dependencies": {
     "csvtojson": "^2.0.10",
     "discord.js": "^13.0.0",
+    "flexsearch": "^0.7.21",
     "request": "^2.88.2"
   },
   "repository": {

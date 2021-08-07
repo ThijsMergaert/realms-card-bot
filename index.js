@@ -3,7 +3,8 @@ const { Gallery } = require('./lib/gallery');
 
 // create a new Discord client
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
-const regex = /\[\[(.*)\]\]/;
+const regex = /\[\[([^\[][^\]]*)\]\]/;
+const MAX_RESULTS = 25;
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
@@ -13,26 +14,29 @@ client.once('ready', async () => {
     console.log('Ready!');
 });
 
+// run this code when a message is received
 client.on('messageCreate', async message => {
+    // 
     const matches = message.content.match(regex);
         if (matches) {
             try {
-                const results = await this.gallery.searchGallery(matches[1]);
+                const results = await this.gallery.searchGallery(matches[1], MAX_RESULTS);
                 if (results.length === 0) {
                     await message.reply('No cards found with this name');
                     return;
                 }
                 if (results.length > 1) {
-                    await message.reply({content: 'Multiple matches found, please select your choice:', components: [await generateSelectMenu(results.slice(0, 25))]});
+                    await message.reply({content: 'Multiple matches found, please select your choice:', components: [await generateSelectMenu(this.gallery, results)]});
                     return;
                 }
-                await message.reply({content: `Card found`, embeds: await generateCardEmbeds(this.gallery, results[0].index)});
+                await message.reply({content: `Card found`, embeds: await generateCardEmbeds(this.gallery, results[0])});
             } catch (e) {
                 console.log(e);
             }
         };
 });
 
+// run this code when an interaction is received
 client.on('interactionCreate', async interaction => {
     try {
         const message = interaction.message;
@@ -46,16 +50,16 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-async function generateSelectMenu(cards) {
-    const selectOptions = cards.map(card => {
-        const entry = card.entry;
-        const selectOption = {
-            label: entry.Name,
-            value: String(card.index),
-            description: "".concat(entry.Type ? `Type: ${entry.Type}, ` : "", entry.Faction ? `Faction: ${entry.Faction}, ` : "",  `Set: ${entry['Set Name']}`).slice(0, 100)
-        };
-        return selectOption;
-    })
+async function generateSelectMenu(gallery, cardIndexes) {
+    const selectOptions = await Promise.all(cardIndexes.map(async cardIndex => {
+            const entry = await gallery.getGalleryItem(cardIndex);
+            const selectOption = {
+                label: entry.Name,
+                value: String(cardIndex),
+                description: "".concat(entry.Type ? `Type: ${entry.Type}, ` : "", entry.Faction ? `Faction: ${entry.Faction}, ` : "",  `Set: ${entry['Set Name']}`).slice(0, 100)
+            };
+            return selectOption;
+        }));
     const selectMenu = new MessageSelectMenu()
         .addOptions(selectOptions)
         .setCustomId('selectMenu');
