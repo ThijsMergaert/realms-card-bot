@@ -11,21 +11,17 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "ejs": "^3.1.5",
-    "express": "^4.15.2"
+    "csvtojson": "^2.0.10",
+    "discord.js": "^13.0.0"
   },
-  "devDependencies": {
-    "got": "^11.3.0",
-    "tape": "^4.7.0"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "url": "https://github.com/ThijsMergaert/realms-card-bot"
   },
   "keywords": [
     "node",
-    "heroku",
-    "express"
+    "heroku"
   ],
   "license": "MIT"
 }

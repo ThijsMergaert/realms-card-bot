@@ -1,10 +1,17 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const { Client, Intents } = require('discord.js');
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+// create a new Discord client
+const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
+
+// when the client is ready, run this code
+// this event will only trigger one time after logging in
+client.once('ready', () => {
+	console.log('Ready!');
+});
+
+client.on('messageCreate', message => {
+	console.log(message);
+});
+
+// login to Discord with your app's token
+client.login(token).catch(console.log);
