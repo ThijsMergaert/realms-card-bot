@@ -21,14 +21,14 @@ client.on('messageCreate', async message => {
             try {
                 const results = await this.gallery.searchGallery(matches[1]);
                 if (results.length === 0) {
-                    message.reply('No cards found with this name');
+                    await message.reply('No cards found with this name');
                     return;
                 }
                 if (results.length > 1) {
-                    message.reply({content: 'Multiple matches found, please select your choice:', components: [await generateSelectMenu(results)]});
+                    await message.reply({content: 'Multiple matches found, please select your choice:', components: [await generateSelectMenu(results.slice(0, 25))]});
                     return;
                 }
-                message.reply({content: `Card found`, embeds: await generateCardEmbeds(this.gallery, results[0].index)});
+                await message.reply({content: `Card found`, embeds: await generateCardEmbeds(this.gallery, results[0].index)});
             } catch (e) {
                 console.log(e);
             }
@@ -40,7 +40,7 @@ client.on('interactionCreate', async interaction => {
         const message = interaction.message;
         if (interaction.customId === 'selectMenu') {
             const cardIndex = Number(interaction.values[0]);
-            interaction.update({content: 'Card selected', embeds: await generateCardEmbeds(this.gallery, cardIndex), components: []});
+            await interaction.update({content: 'Card selected', embeds: await generateCardEmbeds(this.gallery, cardIndex), components: []});
         }
     } catch (e) {
         console.log(e);
