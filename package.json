@@ -1,20 +1,20 @@
 {
-  "name": "node-js-getting-started",
+  "name": "realms-card-bot",
   "version": "0.3.0",
-  "description": "A sample Node.js app using Express 4",
+  "description": "Hero Realms Discord card bot",
   "engines": {
-    "node": "14.x"
+    "node": "16.6.1"
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "node test.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "csvtojson": "^2.0.10",
-    "discord.js": "^13.0.0"
+    "discord.js": "^13.0.0",
+    "express": "^4.17.1",
+    "turndown": "^7.1.1"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/ThijsMergaert/realms-card-bot"
