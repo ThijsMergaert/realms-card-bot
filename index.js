@@ -10,7 +10,7 @@ const MAX_RESULTS = 25;
 // this event will only trigger one time after logging in
 client.once('ready', async () => {
     this.gallery = new Gallery();
-    await this.gallery.parseGallery(process.env.SOURCE_DATA_FILE);
+    await this.gallery.parseGallery(process.env.HR_SOURCE_DATA_FILE);
     console.log('Ready!');
 });
 
