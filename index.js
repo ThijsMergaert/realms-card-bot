@@ -1,17 +1,15 @@
 const { Client, Intents, MessageEmbed, MessageSelectMenu, MessageSelectOptionData, MessageActionRow } = require('discord.js');
 const { Gallery } = require('./lib/gallery');
-const TurndownService = require('turndown');
 
 // create a new Discord client
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
 const regex = /\[\[(.*)\]\]/;
-const turndownService = new TurndownService({hr: ''});
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
 client.once('ready', async () => {
     this.gallery = new Gallery();
-    await this.gallery.parseGallery("./Hero Realms Card Gallery - Images - Card Gallery.csv");
+    await this.gallery.parseGallery(process.env.SOURCE_DATA_FILE);
     console.log('Ready!');
 });
 
