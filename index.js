@@ -3,7 +3,7 @@ const { Gallery } = require('./lib/gallery');
 
 // create a new Discord client
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
-const regex = /\[\[([^\[][^\]]*)\]\]/;
+const regex = /\[\[([^\[][^\]]*)\]\]/g;
 const MAX_RESULTS = 25;
 
 // when the client is ready, run this code
@@ -16,24 +16,28 @@ client.once('ready', async () => {
 
 // run this code when a message is received
 client.on('messageCreate', async message => {
+    if (message.author.bot) return;
     // 
-    const matches = message.content.match(regex);
-        if (matches) {
-            try {
-                const results = await this.gallery.searchGallery(matches[1], MAX_RESULTS);
+    const matches = message.content.matchAll(regex);
+    if (matches) {
+        try {
+            for(const match of matches) {
+                const searchTerm = match[1];
+                const results = await this.gallery.searchGallery(searchTerm, MAX_RESULTS);
                 if (results.length === 0) {
-                    await message.reply('No cards found with this name');
-                    return;
+                    await message.reply(`No cards found with name "${searchTerm}"`);
+                    continue;
                 }
                 if (results.length > 1) {
-                    await message.reply({content: 'Multiple matches found, please select your choice:', components: [await generateSelectMenu(this.gallery, results)]});
-                    return;
+                    await message.reply({content: `Multiple matches found for name "${searchTerm}", please select your choice:`, components: [await generateSelectMenu(this.gallery, results)]});
+                    continue;
                 }
-                await message.reply({content: `Card found`, embeds: await generateCardEmbeds(this.gallery, results[0])});
-            } catch (e) {
-                console.log(e);
+                await message.reply({content: `Card found for name "${searchTerm}"`, embeds: await generateCardEmbeds(this.gallery, results[0])});
             }
-        };
+        } catch (e) {
+            console.log(e);
+        }
+    };
 });
 
 // run this code when an interaction is received
