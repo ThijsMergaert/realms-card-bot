@@ -17,7 +17,6 @@ client.once('ready', async () => {
 // run this code when a message is received
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
-    // 
     const matches = message.content.matchAll(regex);
     if (matches) {
         try {
@@ -78,11 +77,29 @@ async function generateCardEmbeds(gallery, index) {
     const embeds = [];
     const name = card.Name;
     for (const index in cardImageUrls) {
+
+        //Modifying message side color for "rarity" 
+        // -- less than 2 is "gold", 
+        // -- less than 3 is "sliver" 
+        // -- anything else is suppose to be white, but see comment below
+        var color = '#b04343'
+        if (card['Set Qty'] < 2){
+            color = '#d7b369';
+        }
+        else if (card['Set Qty'] < 3){
+            color = '#c0c0c0';
+        }
+        else{
+            color = '#b04343'; //White (#ffffff) is the common color, but we can keep the original #b04343 color
+        }
+                     
         const cardEmbed = new MessageEmbed()
-            .setColor('#b04343')
+            .setColor(color)
             .setTitle(card.Name)
+            //Added a turnary operation here to check if the data for the results is populated, if not populate the field with "\u200b" (this is blank according to the Discord.js docs)
+            // - Scorecards/Mastery did not have types in the csv
             .setFields(
-                { name: 'Type', value: card.Type }
+                { name: 'Type', value: (card.Type ? card.Type : '\u200b'), inline: false }
             )
             .setURL('https://www.herorealms.com/card-gallery/')
             .setImage(cardImageUrls[index])
