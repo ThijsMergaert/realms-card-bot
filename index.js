@@ -85,7 +85,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'selectMenu') {
             const cardIndex = Number(interaction.values[0]);
             //console.log(`Card Index Selected: ${cardIndex}`)
-            await interaction.update({content: 'Card selected', embeds: await generateCardEmbeds(this.gallery, cardIndex, true, false, true, true, true, true), components: []});
+            await interaction.update({content: 'Card selected', embeds: await generateCardEmbeds(this.gallery, cardIndex, true, false, true, false, false, false), components: []});
         }
     } catch (e) {
         console.log(e);
