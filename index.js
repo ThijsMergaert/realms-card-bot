@@ -52,9 +52,9 @@ client.on('messageCreate', async message => {
                 var showText = false;
                 var showImage = true;
                 var showType = true;
-                var showCost = true;
-                var showFaction = true;
-                var showDefense = true;
+                var showCost = false;
+                var showFaction = false;
+                var showDefense = false;
 
                 //We figured out the user wanted a card search, so let's get the results!
                 if(cardSearch){
