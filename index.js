@@ -166,7 +166,22 @@ async function generateCardEmbeds(gallery, index, showImage, showText, showType,
 
         embeds.push(cardEmbed);
     }
+
+    // Issue #3 workaround: Reverse embed order so back of the card is displayed first for RoT ability/skill cards
+    if (needsReversing(card)) {
+        embeds.reverse();
+    }
+
     return embeds;
+}
+
+function needsReversing(card) {
+    const role = card.Role;
+    const set = card['Set Name'];
+    if(!role || !set) {
+        return false;
+    }
+    return (role === 'Character Skill' || role === 'Character Ability') && set === 'Campaign Deck: Ruin of Thandar';
 }
 
 // login to Discord with your app's token
