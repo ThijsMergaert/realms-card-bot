@@ -158,7 +158,7 @@ async function generateCardEmbeds(gallery, index, showImage, showText, showType,
             cardEmbed.addField('Faction', (card.Faction ? card.Faction : '\u200b'), true)
         }
         if(card.Defense && showDefense){
-            cardEmbed.addField('Defense', (card.Faction ? card.Defense : '\u200b'), true)
+            cardEmbed.addField('Defense', (card.Defense ? card.Defense : '\u200b'), true)
         }
         if(card.Text && showText){
             cardEmbed.addField('Card/Ability Text', (card.Text ? card.Text : '\u200b'), false)
