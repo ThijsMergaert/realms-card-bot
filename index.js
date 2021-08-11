@@ -127,7 +127,7 @@ async function generateCardEmbeds(gallery, index, showImage, showText, showType,
             color = '#d7b369';
         }
         else if (card['Set Qty'] < 3){
-            color = '#c0c0c0';
+            color = '#6e7c84';
         }
         else{
             color = '#ffffff';
