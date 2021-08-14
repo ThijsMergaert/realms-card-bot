@@ -12,8 +12,8 @@ const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
 const VERSION_NUMBER = "v0.3.0";
 
-var startTime;
-var cardsFetched;
+let startTime;
+let cardsFetched;
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
