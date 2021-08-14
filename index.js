@@ -67,12 +67,12 @@ client.on('messageCreate', async message => {
                     if(cardSearch){
 
                         //"Default View"
-                        var showText = false;
-                        var showImage = true;
-                        var showType = true;
-                        var showCost = false;
-                        var showFaction = false;
-                        var showDefense = false;
+                        let showText = false;
+                        let showImage = true;
+                        let showType = true;
+                        let showCost = false;
+                        let showFaction = false;
+                        let showDefense = false;
 
                         if(defaultView){ //Default View -- [[card]]
                             //console.log("Default View");
