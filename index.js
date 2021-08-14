@@ -13,8 +13,8 @@ const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
 const VERSION_NUMBER = "v1.0.0";
 
-var startTime;
-var cardsFetched;
+let startTime;
+let cardsFetched;
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
@@ -53,27 +53,27 @@ client.on('messageCreate', async message => {
                 if(commandMatches){
                     //console.log(`commandMatches[1]: "${commandMatches[1]}"`);
 
-                    var defaultView = commandMatches[1] === undefined || commandMatches[1] === '';
-                    var textView = commandMatches[1] && commandMatches[1].toLowerCase() === "t:";
-                    var imageView = commandMatches[1] && commandMatches[1].toLowerCase() === "i:";
-                    var verboseView = commandMatches[1] && commandMatches[1].toLowerCase() === "v:";
+                    const defaultView = commandMatches[1] === undefined || commandMatches[1] === '';
+                    const textView = commandMatches[1] && commandMatches[1].toLowerCase() === "t:";
+                    const imageView = commandMatches[1] && commandMatches[1].toLowerCase() === "i:";
+                    const verboseView = commandMatches[1] && commandMatches[1].toLowerCase() === "v:";
 
                     //[[card]] [[t:card]] [[i:card]] [[v:card]]
-                    var cardSearch = defaultView || textView || imageView || verboseView;
+                    const cardSearch = defaultView || textView || imageView || verboseView;
 
                     //[[a:???]] -- administrative functions
-                    var adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
+                    const adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
 
                     //We figured out the user wanted a card search, so let's get the results!
                     if(cardSearch){
 
                         //"Default View"
-                        var showText = false;
-                        var showImage = true;
-                        var showType = true;
-                        var showCost = false;
-                        var showFaction = false;
-                        var showDefense = false;
+                        let showText = false;
+                        let showImage = true;
+                        let showType = true;
+                        let showCost = false;
+                        let showFaction = false;
+                        let showDefense = false;
 
                         if(defaultView){ //Default View -- [[card]]
                             //console.log("Default View");
