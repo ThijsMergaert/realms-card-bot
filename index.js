@@ -11,7 +11,7 @@ const messageRegex = /\[\[([^\[][^\]]*)\]\]/g;
 const commandRegex = /^([aAtTiIvV]\:)?([a-zA-Z \(\),\|\-!\']+)$/;
 const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
-const VERSION_NUMBER = "v0.3.0";
+const VERSION_NUMBER = "v1.0.0";
 
 var startTime;
 var cardsFetched;
