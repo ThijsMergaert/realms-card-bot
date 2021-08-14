@@ -61,7 +61,7 @@ client.on('messageCreate', async message => {
                     const cardSearch = defaultView || textView || imageView || verboseView;
 
                     //[[a:???]] -- administrative functions
-                    var adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
+                    const adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
 
                     //We figured out the user wanted a card search, so let's get the results!
                     if(cardSearch){
