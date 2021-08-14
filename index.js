@@ -7,7 +7,8 @@ const { Gallery } = require('./lib/gallery');
 
 // create a new Discord client
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
-const regex = /\[\[([^\[][^\]]*)\]\]/g;
+const messageRegex = /\[\[([^\[][^\]]*)\]\]/g;
+const commandRegex = /^([aAtTiIvV]\:)?([a-zA-Z \(\),\|\-!\']+)$/;
 const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
 const VERSION_NUMBER = "v0.3.0";
@@ -28,7 +29,7 @@ client.once('ready', async () => {
 // run this code when a message is received
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
-    const matches = message.content.matchAll(regex);
+    const matches = message.content.matchAll(messageRegex);
 
     if (matches) {
         try {
@@ -45,7 +46,7 @@ client.on('messageCreate', async message => {
                 //console.log(`Command Input: "${commandInput}"`);
                 //Perform a regex check here for data sanitization on commandInput
                 //  - a-zA-Z (),|-!' - (space is included)
-                const commandMatches = commandInput.match(/^([aAtTiIvV]\:)?([a-zA-Z \(\),\|\-!\']+)$/);
+                const commandMatches = commandInput.match(commandRegex);
 
                 //console.log(`Matches ${commandMatches}`);
 
@@ -110,8 +111,8 @@ client.on('messageCreate', async message => {
                     else if(adminCommand){
                         const adminCommandTerm = commandMatches[2].toLowerCase();
                         
-                        //[a:ping], [a:uptime], [a:stats] -- administrative functions
-                        //[a:days] -- days since the kickstarter for HR successfully funded
+                        //[[a:ping]], [[a:uptime]], [[a:stats]] -- administrative functions
+                        //[[a:days]] -- days since the kickstarter for HR successfully funded
                         
                         if(adminCommandTerm === 'ping'){
                             await message.reply(`pong!`);
@@ -216,7 +217,7 @@ async function generateCardEmbeds(gallery, index, showImage, showText, showType,
             .setColor(color)
             .setTitle(card.Name)
             .setURL('https://www.herorealms.com/card-gallery/')
-            .setFooter(`Set: ${card['Set Name']}        Artist: ${card.Artist}`); //Do we want to show the footer if a user requests image only?
+            .setFooter(`Set: ${card['Set Name']}        Artist: ${card.Artist}`);
 
         //Moving this here to provide more control as to when the image will be added to the embed.
         if(showImage){
