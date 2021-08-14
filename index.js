@@ -52,13 +52,13 @@ client.on('messageCreate', async message => {
                 if(commandMatches){
                     //console.log(`commandMatches[1]: "${commandMatches[1]}"`);
 
-                    var defaultView = commandMatches[1] === undefined || commandMatches[1] === '';
-                    var textView = commandMatches[1] && commandMatches[1].toLowerCase() === "t:";
-                    var imageView = commandMatches[1] && commandMatches[1].toLowerCase() === "i:";
-                    var verboseView = commandMatches[1] && commandMatches[1].toLowerCase() === "v:";
+                    const defaultView = commandMatches[1] === undefined || commandMatches[1] === '';
+                    const textView = commandMatches[1] && commandMatches[1].toLowerCase() === "t:";
+                    const imageView = commandMatches[1] && commandMatches[1].toLowerCase() === "i:";
+                    const verboseView = commandMatches[1] && commandMatches[1].toLowerCase() === "v:";
 
                     //[[card]] [[t:card]] [[i:card]] [[v:card]]
-                    var cardSearch = defaultView || textView || imageView || verboseView;
+                    const cardSearch = defaultView || textView || imageView || verboseView;
 
                     //[[a:???]] -- administrative functions
                     var adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
