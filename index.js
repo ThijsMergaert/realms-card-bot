@@ -1,5 +1,6 @@
 const { Client, Intents, MessageEmbed, MessageSelectMenu, MessageSelectOptionData, MessageActionRow } = require('discord.js');
 const { Gallery } = require('./lib/gallery');
+const { version } = require('./package.json');
 
 // Local Configuration (comment out for heroku)
 //const dotenv = require('dotenv');
@@ -8,9 +9,10 @@ const { Gallery } = require('./lib/gallery');
 // create a new Discord client
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS,  Intents.FLAGS.GUILD_MESSAGES ] });
 const regex = /\[\[([^\[][^\]]*)\]\]/g;
+const commandRegex = /^([aAtTiIvV]\:)?([a-zA-Z \(\),\|\-!\']+)$/;
 const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
-const VERSION_NUMBER = "v0.3.0";
+const VERSION_NUMBER = `v${version}`;
 
 let startTime;
 let cardsFetched;
@@ -45,7 +47,7 @@ client.on('messageCreate', async message => {
                 //console.log(`Command Input: "${commandInput}"`);
                 //Perform a regex check here for data sanitization on commandInput
                 //  - a-zA-Z (),|-!' - (space is included)
-                const commandMatches = commandInput.match(/^([aAtTiIvV]\:)?([a-zA-Z \(\),\|\-!\']+)$/);
+                const commandMatches = commandInput.match(commandRegex);
 
                 //console.log(`Matches ${commandMatches}`);
 
@@ -110,42 +112,47 @@ client.on('messageCreate', async message => {
                     else if(adminCommand){
                         const adminCommandTerm = commandMatches[2].toLowerCase();
                         
-                        //[a:ping], [a:uptime], [a:stats] -- administrative functions
-                        //[a:days] -- days since the kickstarter for HR successfully funded
+                        //[[a:ping]], [[a:uptime]], [[a:stats]] -- administrative functions
+                        //[[a:days]] -- days since the kickstarter for HR successfully funded
                         
-                        if(adminCommandTerm === 'ping'){
-                            await message.reply(`pong!`);
-                        }
-                        else if(adminCommandTerm === 'uptime'){
-                            var uptimeTime = (new Date()).getTime() - startTime;
-                            var s = Math.floor(uptimeTime / 1000);
-                            var m = Math.floor(s / 60);
-                            var h = Math.floor(m / 60);
-                            var d = Math.floor(h / 24);
-                            await message.reply(`Live for ${d} day(s), ${h - (d*24)} hour(s), ${m - (h*60) - (d*24*60)} minute(s) and ${s - (m*60) - (h*60*60) - (d*24*60*60)} second(s).`);
-                        }
-                        else if(adminCommandTerm === 'pint'){
-                            await message.reply(`I'll raise a glass to that!  Not that bots can actually drink a pint....`);
-                        }
-                        else if(adminCommandTerm === 'help'){
-                            await message.reply(`I'm sorry Dave, but I can't allow you to do that.`);
-                        }
-                        else if(adminCommandTerm === 'about'){
-                            await message.reply(`Realms Card Bot ${VERSION_NUMBER} -- https://github.com/ThijsMergaert/realms-card-bot -- Co-Created by LivorMortis and Tyraziel.  All images and card data are property and copyright of Wise Wizard Games.  This bot is in no way affiliated or endorsed by WWG.`);
-                        }
-                        else if(adminCommandTerm === 'days'){
-                            var fundedDate = new Date("07/30/2021");
-                            var now = new Date();
-                            var difference = Math.abs(now.getTime() - fundedDate.getTime());
-                            var differenceInDays = Math.ceil(difference / (1000* 60 * 60 * 24));
-                            await message.reply(`It's been ${differenceInDays} days since the Hero Realms Digital Kick Starter successfully funded!!!  Late Backer Beta Access is still available: https://shop.wisewizardgames.com/products/hero-realms-digital-beta-access`);
-                        }
-                        else if(adminCommandTerm === 'stats'){
-                            await message.reply(`1.21 gigawats!?!?!?!?`); //placeholder for now
+                        switch (adminCommandTerm) {
+                            case 'ping':
+                                await message.reply(`pong!`);
+                                break;
+                            case 'uptime':
+                                const uptimeTime = (new Date()).getTime() - startTime;
+                                const s = Math.floor(uptimeTime / 1000);
+                                const m = Math.floor(s / 60);
+                                const h = Math.floor(m / 60);
+                                const d = Math.floor(h / 24);
+                                await message.reply(`Live for ${d} day(s), ${h - (d*24)} hour(s), ${m - (h*60) - (d*24*60)} minute(s) and ${s - (m*60) - (h*60*60) - (d*24*60*60)} second(s).`);
+                                break;
+                            case 'pint':
+                                await message.reply(`I'll raise a glass to that!  Not that bots can actually drink a pint....`);
+                                break;
+                            case 'help':
+                                await message.reply(`I'm sorry Dave, but I can't allow you to do that.`);
+                                break;
+                            case 'about':
+                                await message.reply(`Realms Card Bot ${VERSION_NUMBER} -- https://github.com/ThijsMergaert/realms-card-bot -- Co-Created by LivorMortis and Tyraziel.  All images and card data are property and copyright of Wise Wizard Games.  This bot is in no way affiliated or endorsed by WWG.`);
+                                break;
+                            case 'days':
+                                const fundedDate = new Date("07/30/2021");
+                                const now = new Date();
+                                const difference = Math.abs(now.getTime() - fundedDate.getTime());
+                                const differenceInDays = Math.ceil(difference / (1000* 60 * 60 * 24));
+                                await message.reply(`It's been ${differenceInDays} days since the Hero Realms Digital Kick Starter successfully funded!!!  Late Backer Beta Access is still available: https://shop.wisewizardgames.com/products/hero-realms-digital-beta-access`);
+                                break; 
+                            case 'stats':
+                                await message.reply(`1.21 gigawats!?!?!?!?`); //placeholder for now
+                                break;
+                            default:
+                                await message.reply('I don\'t understand this command.');
+                                break;
                         }
                     }
                 }
-                else{
+                else {
                     await message.reply(`Invalid command`);
                 }
             }
