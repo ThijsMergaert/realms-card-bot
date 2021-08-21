@@ -35,9 +35,9 @@ client.once('ready', async () => {
 });
 
 // run this code when a message is received
-client.on('messageCreate', async message => {
-    if (message.author.bot) return;
-    const matches = message.content.matchAll(messageRegex);
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
+  const matches = message.content.matchAll(messageRegex);
 
   if (matches) {
     try {
