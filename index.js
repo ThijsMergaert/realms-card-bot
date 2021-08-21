@@ -14,7 +14,7 @@ const { version } = require('./package.json');
 
 // create a new Discord client
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const regex = /\[\[([^[][^\]]*)\]\]/g;
+const messageRegex = /\[\[([^[][^\]]*)\]\]/g;
 const commandRegex = /^([aAtTiIvV]:)?([a-zA-Z (),|\-!']+)$/;
 const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
@@ -37,7 +37,7 @@ client.once('ready', async () => {
 // run this code when a message is received
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-  const matches = message.content.matchAll(regex);
+  const matches = message.content.matchAll(messageRegex);
 
   if (matches) {
     try {
@@ -89,7 +89,7 @@ client.on('messageCreate', async (message) => {
               showCost = false; showFaction = false; showDefense = false;
             } else if (textView) { // All text no image -- [[t:card]]
               // console.log("Text View");
-              showText = false; showImage = false; showType = true;
+              showText = true; showImage = false; showType = true;
               showCost = true; showFaction = true; showDefense = true;
             } else if (imageView) { // This should be image only -- [[i:card]]
               // console.log("Image View");
