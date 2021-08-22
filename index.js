@@ -141,11 +141,16 @@ client.on('messageCreate', async (message) => {
                 break;
               }
               case 'help':
-                await message.reply('[[card_name]] - Will search for a card in Hero Realms, and will provide the results in the default view.  If there are more ' +
-                                     'than one result, a dropdown will appear to where you can pick the actual card.\n' + 
-                                     '[[t:card_name]] - Will return only the text of a given card (no image).\n' + 
-                                     '[[i:card_name]] - Will only return the image of a given card.\n' + 
-                                     '[[v:card_name]] - Will show the most verbose display for a given card.');
+                await message.reply('[[card_name]] - Will search for a card in Hero Realms, and '
+                                  + 'will provide the results in the default view.  If there are '
+                                  + 'more than one result, a dropdown will appear to where you '
+                                  + 'can pick the actual card.\n' 
+                                  + '[[t:card_name]] - Will return only the text of a given '
+                                  + 'card (no image).\n' 
+                                  + '[[i:card_name]] - Will only return the image of a given '
+                                  + 'card.\n' 
+                                  + '[[v:card_name]] - Will show the most verbose display for a '
+                                  + 'given card.');
                 break;
               case 'pint':
                 await message.reply('I\'ll raise a glass to that!  Not that bots can actually drink a pint....');
