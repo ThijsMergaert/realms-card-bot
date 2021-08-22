@@ -155,7 +155,7 @@ client.on('messageCreate', async (message) => {
                 await message.reply('I\'ll raise a glass to that!  Not that bots can actually drink a pint....');
                 break;
               case 'open':
-                await message.reply('I\'m sorry, Dave.  I\'m afriad I can\'t do that.');
+                await message.reply('I\'m sorry, Dave.  I\'m afraid I can\'t do that.');
                 break;
               case 'cake':
                 await message.reply('The cake is not a lie.');
