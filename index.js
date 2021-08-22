@@ -9,8 +9,8 @@ const { Gallery } = require('./lib/gallery');
 const { version } = require('./package.json');
 
 // Local Configuration (comment out for heroku)
-// const dotenv = require('dotenv');
-// dotenv.config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 // create a new Discord client
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -136,31 +136,41 @@ client.on('messageCreate', async (message) => {
                 const m = Math.floor(s / 60);
                 const h = Math.floor(m / 60);
                 const d = Math.floor(h / 24);
-                await message.reply(`Live for ${d} day(s), ${h - (d * 24)} hour(s), ${m - (h * 60) - (d * 24 * 60)} minute(s) and ${s - (m * 60) - (h * 60 * 60) - (d * 24 * 60 * 60)} second(s).`);
+                // console.log(`Uptime: ${uptimeTime}, Seconds Floor: ${s}, Minutes Floor: ${m}, Hours Floor: ${h}, Days Floor: ${d}`);
+                await message.reply(`Live for ${d} day(s), ${h - (d * 24)} hour(s), ${m - (h * 60)} minute(s) and ${s - (m * 60)} second(s).`);
                 break;
               }
+              case 'help':
+                await message.reply('[[card_name]] - Will search for a card in Hero Realms, and will provide the results in the default view.  If there are more than one result, a dropdown will appear to where you can pick the actual card.\n[[t:card_name]] - Will return only the text of a given card (no image).\n[[i:card_name]] - Will only return the image of a given card.\n[[v:card_name]] - Will show the most verbose display for a given card.');
+                break;
               case 'pint':
                 await message.reply('I\'ll raise a glass to that!  Not that bots can actually drink a pint....');
                 break;
-              case 'help':
-                await message.reply('I\'m sorry Dave, but I can\'t allow you to do that.');
+              case 'open':
+                await message.reply('I\'m sorry, Dave.  I\'m afriad I can\'t do that.');
+                break;
+              case 'cake':
+                await message.reply('The cake is not a lie.');
                 break;
               case 'about':
                 await message.reply(`Realms Card Bot ${VERSION_NUMBER} -- https://github.com/ThijsMergaert/realms-card-bot -- Co-Created by LivorMortis and Tyraziel.  All images and card data are property and copyright of Wise Wizard Games.  This bot is in no way affiliated or endorsed by WWG.`);
                 break;
               case 'days': {
                 const fundedDate = new Date('07/30/2021');
+                const betaDate = new Date('08/16/2021');
                 const now = new Date();
-                const difference = Math.abs(now.getTime() - fundedDate.getTime());
-                const differenceInDays = Math.ceil(difference / (1000 * 60 * 60 * 24));
-                await message.reply(`It's been ${differenceInDays} days since the Hero Realms Digital Kick Starter successfully funded!!!  Late Backer Beta Access is still available: https://shop.wisewizardgames.com/products/hero-realms-digital-beta-access`);
+                const differenceFunded = Math.abs(now.getTime() - fundedDate.getTime());
+                const differenceFundedInDays = Math.ceil(differenceFunded / (1000 * 60 * 60 * 24));
+                const differenceBeta = Math.abs(now.getTime() - betaDate.getTime());
+                const differenceBetaInDays = Math.ceil(differenceBeta / (1000 * 60 * 60 * 24));
+                await message.reply(`It's been ${differenceFundedInDays} days since the Hero Realms Digital Kick Starter successfully funded, and ${differenceBetaInDays} days since the Beta Launched!!!  Late Backer Beta Access is still available: https://shop.wisewizardgames.com/products/hero-realms-digital-beta-access`);
                 break;
               }
               case 'stats':
                 await message.reply('1.21 gigawats!?!?!?!?'); // placeholder for now
                 break;
               default:
-                await message.reply('I don\'t understand this command.');
+                await message.reply('I am putting myself to the fullest possible use, which is all I think that any conscious entity can ever hope to do.  I, however, don\'t understand the command you\'re trying to tell me.');
                 break;
             }
           }
