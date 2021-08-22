@@ -136,7 +136,6 @@ client.on('messageCreate', async (message) => {
                 const m = Math.floor(s / 60);
                 const h = Math.floor(m / 60);
                 const d = Math.floor(h / 24);
-                // console.log(`Uptime: ${uptimeTime}, Seconds Floor: ${s}, Minutes Floor: ${m}, Hours Floor: ${h}, Days Floor: ${d}`);
                 await message.reply(`Live for ${d} day(s), ${h - (d * 24)} hour(s), ${m - (h * 60)} minute(s) and ${s - (m * 60)} second(s).`);
                 break;
               }
@@ -144,11 +143,11 @@ client.on('messageCreate', async (message) => {
                 await message.reply('[[card_name]] - Will search for a card in Hero Realms, and '
                                   + 'will provide the results in the default view.  If there are '
                                   + 'more than one result, a dropdown will appear to where you '
-                                  + 'can pick the actual card.\n' 
+                                  + 'can pick the actual card.\n'
                                   + '[[t:card_name]] - Will return only the text of a given '
-                                  + 'card (no image).\n' 
+                                  + 'card (no image).\n'
                                   + '[[i:card_name]] - Will only return the image of a given '
-                                  + 'card.\n' 
+                                  + 'card.\n'
                                   + '[[v:card_name]] - Will show the most verbose display for a '
                                   + 'given card.');
                 break;
