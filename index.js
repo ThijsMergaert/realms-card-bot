@@ -208,7 +208,7 @@ client.on('interactionCreate', async (interaction) => {
       if (commandMatches) {
         let commandPrefix = commandMatches[1];
         const cardIndex = Number(commandMatches[2]);
-        
+
         // console.log(`Card Index Selected: ${cardIndex}`)
 
         const defaultView = commandPrefix === undefined || commandPrefix === '';
