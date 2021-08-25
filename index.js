@@ -203,13 +203,13 @@ client.on('messageCreate', async (message) => {
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.customId === 'selectMenu') {
-      //console.log(`Interaction Selected: '${interaction.values[0]}'`);
+      // console.log(`Interaction Selected: '${interaction.values[0]}'`);
       const commandMatches = interaction.values[0].match(cardSelectRegex);
       if (commandMatches) {
         let commandPrefix = commandMatches[1];
         const cardIndex = Number(commandMatches[2]);
         
-        //console.log(`Card Index Selected: ${cardIndex}`)
+        // console.log(`Card Index Selected: ${cardIndex}`)
 
         const defaultView = commandPrefix === undefined || commandPrefix === '';
         const textView = commandPrefix && commandPrefix.toLowerCase() === 't:';
@@ -246,20 +246,14 @@ client.on('interactionCreate', async (interaction) => {
           showCost = true; showFaction = true; showDefense = true;
         }
 
-        // figure out what the searchTerm is (after changing the above to commandInput)
-        const searchTerm = commandMatches[2];
-
-      
-      
         await interaction.update({
           content: 'Card selected',
           embeds: await generateCardEmbeds(this.gallery,
             cardIndex, showImage, showText, showType, showCost, showFaction, showDefense),
           components: [],
         });
-      }
-      else{
-        console.log("SOME ERROR HAPPENED!");
+      } else {
+        console.log('SOME ERROR HAPPENED!');
       }
     }
   } catch (e) {
@@ -275,7 +269,7 @@ async function generateSelectMenu(gallery, cardIndexes, commandPrefix) {
     // console.log(`Value: '${cardIndex}'`);
     const selectOption = {
       label: entry.Name,
-      value: commandPrefix+String(cardIndex),
+      value: commandPrefix + String(cardIndex),
       description: ''.concat(entry.Type ? `Type: ${entry.Type}, ` : '', entry.Faction ? `Faction: ${entry.Faction}, ` : '', `Set: ${entry['Set Name']}`).slice(0, 100),
     };
     return selectOption;
