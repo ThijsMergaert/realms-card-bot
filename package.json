@@ -1,6 +1,6 @@
 {
   "name": "realms-card-bot",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Hero Realms Discord card bot",
   "engines": {
     "node": "16.6.1"

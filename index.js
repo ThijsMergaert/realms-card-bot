@@ -16,6 +16,7 @@ const { version } = require('./package.json');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const messageRegex = /\[\[([^[][^\]]*)\]\]/g;
 const commandRegex = /^([aAtTiIvV]:)?([a-zA-Z (),|\-!']+)$/;
+const cardSelectRegex = /^([tTiIvV]:)?(\d+)$/;
 const MAX_RESULTS = 25;
 const MAX_RESPONSES = 3;
 const VERSION_NUMBER = `v${version}`;
@@ -62,45 +63,19 @@ client.on('messageCreate', async (message) => {
         if (commandMatches) {
           // console.log(`commandMatches[1]: "${commandMatches[1]}"`);
 
-          const defaultView = commandMatches[1] === undefined || commandMatches[1] === '';
-          const textView = commandMatches[1] && commandMatches[1].toLowerCase() === 't:';
-          const imageView = commandMatches[1] && commandMatches[1].toLowerCase() === 'i:';
-          const verboseView = commandMatches[1] && commandMatches[1].toLowerCase() === 'v:';
+          const commandPrefix = commandMatches[1];
+
+          const view = getView(commandPrefix);
 
           // [[card]] [[t:card]] [[i:card]] [[v:card]]
-          const cardSearch = defaultView || textView || imageView || verboseView;
+          const cardSearch = view.defaultView || view.textView || view.imageView
+                             || view.verboseView;
 
           // [[a:???]] -- administrative functions
-          const adminCommand = commandMatches[1] && commandMatches[1].toLowerCase() === 'a:';
+          const adminCommand = commandPrefix && commandPrefix.toLowerCase() === 'a:';
 
           // We figured out the user wanted a card search, so let's get the results!
           if (cardSearch) {
-            // "Default View"
-            let showText = false;
-            let showImage = true;
-            let showType = true;
-            let showCost = false;
-            let showFaction = false;
-            let showDefense = false;
-
-            if (defaultView) { // Default View -- [[card]]
-              // console.log("Default View");
-              showText = false; showImage = true; showType = true;
-              showCost = false; showFaction = false; showDefense = false;
-            } else if (textView) { // All text no image -- [[t:card]]
-              // console.log("Text View");
-              showText = true; showImage = false; showType = true;
-              showCost = true; showFaction = true; showDefense = true;
-            } else if (imageView) { // This should be image only -- [[i:card]]
-              // console.log("Image View");
-              showText = false; showImage = true; showType = false;
-              showCost = false; showFaction = false; showDefense = false;
-            } else if (verboseView) { // This is all the things -- [[v:card]]
-              // console.log("All the Things!! View");
-              showText = true; showImage = true; showType = true;
-              showCost = true; showFaction = true; showDefense = true;
-            }
-
             // figure out what the searchTerm is (after changing the above to commandInput)
             const searchTerm = commandMatches[2];
             const results = await this.gallery.searchGallery(searchTerm, MAX_RESULTS);
@@ -109,13 +84,14 @@ client.on('messageCreate', async (message) => {
             } else if (results.length > 1) {
               await message.reply({
                 content: `Multiple matches found for name "${searchTerm}", please select your choice:`,
-                components: [await generateSelectMenu(this.gallery, results)],
+                components: [await generateSelectMenu(this.gallery, results, view.commandPrefix)],
               });
             } else if (results.length === 1) {
               await message.reply({
                 content: `Card found for name "${searchTerm}"`,
                 embeds: await generateCardEmbeds(this.gallery,
-                  results[0], showImage, showText, showType, showCost, showFaction, showDefense),
+                  results[0], view.showImage, view.showText, view.showType,
+                  view.showCost, view.showFaction, view.showDefense),
               });
             } else {
               await message.reply('A fatal error has occured.');
@@ -196,14 +172,24 @@ client.on('messageCreate', async (message) => {
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.customId === 'selectMenu') {
-      const cardIndex = Number(interaction.values[0]);
-      // console.log(`Card Index Selected: ${cardIndex}`)
-      await interaction.update({
-        content: 'Card selected',
-        embeds: await generateCardEmbeds(this.gallery,
-          cardIndex, true, false, true, false, false, false),
-        components: [],
-      });
+      // console.log(`Interaction Selected: '${interaction.values[0]}'`);
+      const commandMatches = interaction.values[0].match(cardSelectRegex);
+      if (commandMatches) {
+        const commandPrefix = commandMatches[1];
+        const cardIndex = Number(commandMatches[2]);
+
+        const view = getView(commandPrefix);
+
+        await interaction.update({
+          content: 'Card selected',
+          embeds: await generateCardEmbeds(this.gallery,
+            cardIndex, view.showImage, view.showText, view.showType, view.showCost,
+            view.showFaction, view.showDefense),
+          components: [],
+        });
+      } else {
+        console.log('SOME ERROR HAPPENED!');
+      }
     }
   } catch (e) {
     console.log(e);
@@ -211,12 +197,14 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-async function generateSelectMenu(gallery, cardIndexes) {
+async function generateSelectMenu(gallery, cardIndexes, commandPrefix) {
+  // console.log(`Command Prefix: '${commandPrefix}'`);
   const selectOptions = await Promise.all(cardIndexes.map(async (cardIndex) => {
     const entry = await gallery.getGalleryItem(cardIndex);
+    // console.log(`Value: '${cardIndex}'`);
     const selectOption = {
       label: entry.Name,
-      value: String(cardIndex),
+      value: commandPrefix + String(cardIndex),
       description: ''.concat(entry.Type ? `Type: ${entry.Type}, ` : '', entry.Faction ? `Faction: ${entry.Faction}, ` : '', `Set: ${entry['Set Name']}`).slice(0, 100),
     };
     return selectOption;
@@ -301,6 +289,60 @@ function needsReversing(card) {
     return false;
   }
   return (role === 'Character Skill' || role === 'Character Ability') && set === 'Campaign Deck: Ruin of Thandar';
+}
+
+function getView(commandPrefix) {
+  const defaultView = commandPrefix === undefined || commandPrefix === '';
+  const textView = commandPrefix && commandPrefix.toLowerCase() === 't:';
+  const imageView = commandPrefix && commandPrefix.toLowerCase() === 'i:';
+  const verboseView = commandPrefix && commandPrefix.toLowerCase() === 'v:';
+
+  // "Default View"
+  let showText = false;
+  let showImage = true;
+  let showType = true;
+  let showCost = false;
+  let showFaction = false;
+  let showDefense = false;
+  let lowerCaseCommandPrefix = '';
+
+  if (defaultView) { // Default View -- [[card]]
+    // console.log("Default View");
+    lowerCaseCommandPrefix = '';
+    showText = false; showImage = true; showType = true;
+    showCost = false; showFaction = false; showDefense = false;
+  } else if (textView) { // All text no image -- [[t:card]]
+    // console.log("Text View");
+    lowerCaseCommandPrefix = 't:';
+    showText = true; showImage = false; showType = true;
+    showCost = true; showFaction = true; showDefense = true;
+  } else if (imageView) { // This should be image only -- [[i:card]]
+    // console.log("Image View");
+    lowerCaseCommandPrefix = 'i:';
+    showText = false; showImage = true; showType = false;
+    showCost = false; showFaction = false; showDefense = false;
+  } else if (verboseView) { // This is all the things -- [[v:card]]
+    // console.log("All the Things!! View");
+    lowerCaseCommandPrefix = 'v:';
+    showText = true; showImage = true; showType = true;
+    showCost = true; showFaction = true; showDefense = true;
+  }
+
+  const returnObject = {
+    commandPrefix: lowerCaseCommandPrefix,
+    showText,
+    showImage,
+    showType,
+    showCost,
+    showFaction,
+    showDefense,
+    defaultView,
+    textView,
+    imageView,
+    verboseView,
+  };
+
+  return returnObject;
 }
 
 // login to Discord with your app's token
